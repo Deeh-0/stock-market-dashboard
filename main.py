@@ -10,7 +10,8 @@ st.set_page_config(page_title="Stock Dashboard", layout="wide")
 
 # API call and Data Transformation
 def get_stock_data(symbol):
-    url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize=full&apikey=YVNU3EHQSDVI5UF3'
+    API_KEY = st.secrets["ALPHA_VANTAGE_KEY"]
+    url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize=full&apikey={API_KEY}'
     r = requests.get(url)
     data =  r.json()
 
