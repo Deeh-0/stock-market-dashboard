@@ -1,5 +1,5 @@
 #import required libraries
-import streamlit as st # pyright: ignore[reportMissingImports]
+import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import requests
