@@ -15,7 +15,22 @@ def get_stock_data(symbol):
     r = requests.get(url)
     data =  r.json()
 
-    df = pd.DataFrame(data["Time Series (Daily)"]).transpose()
+    if "Error Message" in data:
+        st.error(f"Ticker symbol '{symbol}' not found. Please check your spelling")
+        return None
+
+    if "Note" in data or "Information" in data:
+        st.warning("Alpha Vantage API rate limit reached. Please wait a minute and try again")
+        return None
+
+    if "Time Series (Daily)" in data:
+        df = pd.DataFrame(data["Time Series (Daily)"]).transpose()
+    else:
+        st.error("An unexpected error occurred while fetching data.")
+        print("Unexpected API response:", data)
+        return None
+
+    
     df.index = pd.to_datetime(df.index)
     df.rename(columns={
         '1. open': 'open',
@@ -71,16 +86,17 @@ if not symbol:
 
 with st.spinner("Loading Data..."):
     df = get_stock_data(symbol)
-
-    start_date = df.index.min()
-    end_date = df.index.max()
-    full_date_range = pd.date_range(start=start_date, end=end_date, freq='D')
-    missing_dates = full_date_range.difference(df.index).to_list()
-    missing_dates_str = [d.strftime('%Y-%m-%d') for d in missing_dates]
-
-if df is None:
+    if df is None:
     st.error("Error retrieving data. Check Symbol")
     st.stop()
+
+start_date = df.index.min()
+end_date = df.index.max()
+full_date_range = pd.date_range(start=start_date, end=end_date, freq='D')
+missing_dates = full_date_range.difference(df.index).to_list()
+missing_dates_str = [d.strftime('%Y-%m-%d') for d in missing_dates]
+
+
 
 #Time-Based Filtering
 if period != 'All':
