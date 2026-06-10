@@ -87,14 +87,13 @@ if not symbol:
 with st.spinner("Loading Data..."):
     df = get_stock_data(symbol)
     if df is None:
-    st.error("Error retrieving data. Check Symbol")
-    st.stop()
-
-start_date = df.index.min()
-end_date = df.index.max()
-full_date_range = pd.date_range(start=start_date, end=end_date, freq='D')
-missing_dates = full_date_range.difference(df.index).to_list()
-missing_dates_str = [d.strftime('%Y-%m-%d') for d in missing_dates]
+        st.error("Error retrieving data. Check Symbol")
+        st.stop()
+    start_date = df.index.min()
+    end_date = df.index.max()
+    full_date_range = pd.date_range(start=start_date, end=end_date, freq='D')
+    missing_dates = full_date_range.difference(df.index).to_list()
+    missing_dates_str = [d.strftime('%Y-%m-%d') for d in missing_dates]
 
 
 
